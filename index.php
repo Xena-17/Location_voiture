@@ -49,18 +49,27 @@
     
 </body>
 <?php
-   $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "location_voiture";
-    
-    // Créez une connexion
-    $conn = new PDO($servername, $username, $password, $dbname);
-    
-    // Vérifiez la connexion
-    if ($conn->connect_error) {
-        die("Échec de la connexion : " . $conn->connect_error);
-    };
+   $host = 'localhost';
+   $dbname = 'location_voiture';
+   $username = 'root';
+   $password = '';
+   
+   try {
+       $dsn = "mysql:host=$host;dbname=$dbname";
+       $options = [
+           PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+           PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+           PDO::ATTR_EMULATE_PREPARES => false,
+       ];
+       
+       // Correction de l'ordre des paramètres
+       $conn = new PDO($dsn, $username, $password, $options);
+       echo "Connected successfully";
+   } catch (PDOException $e) {
+       echo "Connection failed: " . $e->getMessage();
+   }
+
+   
     // ajout voiture
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
