@@ -61,7 +61,66 @@
     if ($conn->connect_error) {
         die("Échec de la connexion : " . $conn->connect_error);
     };
-    
+    // ajout voiture
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $marque = $_POST['marque'];
+    $modele = $_POST['modele'];
+    $annee = $_POST['annee'];
+    $kilometrage = $_POST['kilometrage'];
+    $disponibilite = isset($_POST['disponibilite']) ? 1 : 0;
+
+    $sql = "INSERT INTO Voiture (marque, modèle, année, kilométrage, disponibilité) VALUES ('$marque', '$modele', $annee, $kilometrage, $disponibilite)";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Nouvelle voiture ajoutée avec succès";
+    } else {
+        echo "Erreur : " . $sql . "<br>" . $conn->error;
+    }
+    $conn->close();
+};
+
+// ajout client
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nom = $_POST['nom'];
+    $prenom = $_POST['prenom'];
+    $adresse = $_POST['adresse'];
+    $email = $_POST['email'];
+    $telephone = $_POST['telephone'];
+    $permis = $_POST['permis'];
+
+    $sql = "INSERT INTO Client (nom, prénom, adresse, email, numéro_téléphone, numéro_permis_conduire) VALUES ('$nom', '$prenom', '$adresse', '$email', '$telephone', '$permis')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Nouveau client ajouté avec succès";
+    } else {
+        echo "Erreur : " . $sql . "<br>" . $conn->error;
+    }
+    $conn->close();
+};
+
+// Réservation voiture
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id_voiture = $_POST['id_voiture'];
+    $id_client = $_POST['id_client'];
+    $date_debut = $_POST['date_debut'];
+    $date_fin = $_POST['date_fin'];
+    $cout_total = (strtotime($date_fin) - strtotime($date_debut)) / (60 * 60 * 24) * 30;
+
+    $sql = "INSERT INTO Réservation (id_voiture, id_client, date_début, date_fin, coût_total) VALUES ($id_voiture, $id_client, '$date_debut', '$date_fin', $cout_total)";
+
+    if ($conn->query($sql) === TRUE) {
+        $conn->query("UPDATE Voiture SET disponibilité = FALSE WHERE id_voiture = $id_voiture");
+        echo "Nouvelle réservation ajoutée avec succès";
+    } else {
+        echo "Erreur : " . $sql . "<br>" . $conn->error;
+    }
+    $conn->close();
+}
+
+
 
 ?>
   
